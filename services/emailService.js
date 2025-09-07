@@ -3,10 +3,11 @@ const config = require('../config')
 
 class EmailService {
   constructor() {
-    // Inicializar EmailJS
-    emailjs.init({
-      publicKey: config.emailjs.publicKey,
-    })
+    // Não precisamos mais do init(), vamos passar as chaves diretamente
+    console.log('🔑 EmailService inicializado')
+    console.log('📧 Service ID:', config.emailjs.serviceId)
+    console.log('🔓 Public Key:', config.emailjs.publicKey)
+    console.log('🔐 Private Key:', config.emailjs.privateKey ? 'Configurada' : 'FALTANDO!')
   }
 
   // Gerar código de verificação
@@ -27,11 +28,19 @@ class EmailService {
       }
 
       console.log(`📧 Enviando código de verificação para: ${email}`)
+      console.log('🔍 Debug - Service ID:', config.emailjs.serviceId)
+      console.log('🔍 Debug - Template ID:', config.emailjs.templates.verification)
+      console.log('🔍 Debug - Public Key:', config.emailjs.publicKey)
+      console.log('🔍 Debug - Private Key:', config.emailjs.privateKey)
       
       const response = await emailjs.send(
         config.emailjs.serviceId,
         config.emailjs.templates.verification,
-        templateParams
+        templateParams,
+        {
+          publicKey: config.emailjs.publicKey,
+          privateKey: config.emailjs.privateKey,
+        }
       )
 
       console.log('✅ E-mail de verificação enviado com sucesso!')
@@ -68,7 +77,9 @@ class EmailService {
       const response = await emailjs.send(
         config.emailjs.serviceId,
         config.emailjs.templates.passwordReset,
-        templateParams
+        templateParams,
+        config.emailjs.publicKey,
+        config.emailjs.privateKey
       )
 
       console.log('✅ E-mail de recuperação enviado com sucesso!')
@@ -104,7 +115,9 @@ class EmailService {
       const response = await emailjs.send(
         config.emailjs.serviceId,
         config.emailjs.templates.invoice,
-        templateParams
+        templateParams,
+        config.emailjs.publicKey,
+        config.emailjs.privateKey
       )
 
       console.log('✅ Nota fiscal enviada com sucesso!')

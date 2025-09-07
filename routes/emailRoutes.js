@@ -3,6 +3,7 @@ const router = express.Router()
 const emailService = require('../services/emailService')
 const fetch = require('node-fetch')
 const config = require('../config')
+const emailjs = require('@emailjs/nodejs')
 
 // Armazenamento temporário dos códigos (em produção, use Redis ou banco)
 const verificationCodes = new Map()
@@ -192,6 +193,53 @@ router.post('/send-invoice', validateEmailData, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Erro interno do servidor'
+    })
+  }
+})
+
+// POST /api/email/send-simple
+// Endpoint simples para backend .NET
+router.post('/send-simple', async (req, res) => {
+  try {
+    const { email, userName, code } = req.body
+    
+    if (!email || !code) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email e código são obrigatórios'
+      })
+    }
+    
+    console.log(`📧 Backend .NET solicitou envio para: ${email}`)
+    
+    const templateParams = {
+      user_name: userName || 'Usuário',
+      user_email: email,
+      verification_code: code,
+      app_name: 'Sistema TCC'
+    }
+
+    const response = await emailjs.send(
+      config.emailjs.serviceId,
+      config.emailjs.templates.verification,
+      templateParams,
+      {
+        publicKey: config.emailjs.publicKey,
+        privateKey: config.emailjs.privateKey,
+      }
+    )
+
+    console.log('✅ E-mail enviado com sucesso pelo backend .NET!')
+    
+    res.json({
+      success: true,
+      message: 'E-mail enviado com sucesso!'
+    })
+  } catch (error) {
+    console.error('❌ Erro ao enviar e-mail:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Erro ao enviar e-mail'
     })
   }
 })

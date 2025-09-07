@@ -8,7 +8,8 @@ module.exports = {
       passwordReset: process.env.EMAILJS_TEMPLATE_PASSWORD_RESET || 'template_password_reset',
       invoice: process.env.EMAILJS_TEMPLATE_INVOICE || 'template_invoice'
     },
-    publicKey: process.env.EMAILJS_PUBLIC_KEY || 'a-SQQ0G00_IwsliqU'
+    publicKey: process.env.EMAILJS_PUBLIC_KEY || 'a-SQQ0G00_IwsliqU',
+    privateKey: process.env.EMAILJS_PRIVATE_KEY || 'p_gtcWnOGn4v5A_6z4VM0'
   },
 
   // Servidor
